@@ -61,7 +61,7 @@
 	function showLinks( r ) {
 		var wrap = document.createDocumentFragment();
 		var inb = h( 'p', 'glseo-note' );
-		inb.textContent = r.inbound ? r.inbound + ' page' + ( r.inbound === 1 ? '' : 's' ) + ' link here from their content' + ( r.in_menu ? ', and the menu does.' : '.' ) : 'No other page links here from its content' + ( r.in_menu ? ' (only the menu does).' : ', and it isn\'t in a menu: an orphan page.' );
+		inb.textContent = r.inbound ? ( r.inbound === 1 ? '1 page links here from its content' : r.inbound + ' pages link here from their content' ) + ( r.in_menu ? ', and the menu does.' : '.' ) : 'No other page links here from its content' + ( r.in_menu ? ' (only the menu does).' : ', and it isn\'t in a menu: an orphan page.' );
 		wrap.append( inb );
 		if ( r.suggestions === null ) {
 			wrap.append( h( 'p', 'glseo-note', 'Link suggestions are off: ' + ( r.why_off || 'switched off' ) + '.' ) );

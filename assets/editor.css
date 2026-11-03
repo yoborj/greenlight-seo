@@ -7,6 +7,7 @@
 .glseo-sub { margin: 10px 0 4px; font-weight: 600; }
 .glseo-check { display: block; margin: 6px 0; }
 .glseo-service { display: grid; gap: 8px; margin: 8px 0 0 24px; max-width: 640px; }
+.glseo-service[hidden] { display: none; }
 .glseo-service label { display: grid; gap: 3px; font-weight: 600; }
 .glseo-service small { font-weight: 400; color: #646970; }
 .glseo-service input, .glseo-service textarea { width: 100%; }
