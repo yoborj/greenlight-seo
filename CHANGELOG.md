@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.1.1 — 2026-11-03
+
+Security hardening. Updating is recommended.
+
+### Security
+- **No requests to internal addresses.** The on-save check verifies that a page's canonical URL answers; a canonical
+  pointing at another host (which an editor can set) is now fetched with WordPress's safe HTTP API, which refuses
+  private and reserved addresses (such as a cloud metadata service), so a check can't reach the server's internal
+  network. Child sitemaps are only read from this site.
+- **Schema can't break out of its script tag.** The JSON-LD Greenlight SEO prints itself is encoded with `<`, `>` and
+  `&` escaped, and its text is plain (no tags, entities decoded).
+- **Rate and size limits.** "Check now" runs at most once per page every 15 seconds (each check requests the site
+  itself), and the link-suggestion endpoint accepts at most 500 KB of unsaved content.
+- **llms.txt** is sent with `X-Content-Type-Options: nosniff`.
+- **Input limits:** up to 25 locations, 30 profile URLs (http and https only), and length limits on every text
+  setting and on the service-page fields. The editor box ignores autosaves.
+- Empty `index.php` files keep the plugin's folders from being listed on servers that allow directory listing.
+
 ## 0.1.0 — 2026-11-03
 
 First version. Works with Yoast SEO (tested with 28.8 on WordPress 7.1), Rank Math (tested with 1.0.280) or

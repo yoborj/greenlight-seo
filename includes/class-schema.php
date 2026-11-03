@@ -87,7 +87,18 @@ class Schema {
 				$props['image'] = $icon;
 			}
 		}
-		return array_filter( $props, function ( $v ) { return '' !== $v && null !== $v && array() !== $v; } );
+		return self::text( array_filter( $props, function ( $v ) { return '' !== $v && null !== $v && array() !== $v; } ) );
+	}
+
+	/**
+	 * Plain text for JSON-LD: no tags, and entities decoded (WordPress stores "<" and "&" from text fields as
+	 * "&lt;" and "&amp;"). Safe to print: the graph is encoded with JSON_HEX_TAG and JSON_HEX_AMP.
+	 */
+	private static function text( $v ) {
+		if ( is_array( $v ) ) {
+			return array_map( array( __CLASS__, 'text' ), $v );
+		}
+		return is_string( $v ) ? html_entity_decode( wp_strip_all_tags( $v ), ENT_QUOTES | ENT_HTML5, 'UTF-8' ) : $v;
 	}
 
 	private static function areas( array $names ) {
@@ -136,7 +147,7 @@ class Schema {
 		if ( $areas ) {
 			$node['areaServed'] = self::areas( $areas );
 		}
-		return array_filter( $node, function ( $v ) { return '' !== $v && null !== $v && array() !== $v; } );
+		return self::text( array_filter( $node, function ( $v ) { return '' !== $v && null !== $v && array() !== $v; } ) );
 	}
 
 	/**
@@ -236,7 +247,7 @@ class Schema {
 		if ( ! $nodes ) {
 			return;
 		}
-		echo "\n<script type=\"application/ld+json\" class=\"greenlight-seo-schema\">" . wp_json_encode( array( '@context' => 'https://schema.org', '@graph' => $nodes ), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE ) . "</script>\n"; // phpcs:ignore WordPress.Security.EscapeOutput
+		echo "\n<script type=\"application/ld+json\" class=\"greenlight-seo-schema\">" . wp_json_encode( array( '@context' => 'https://schema.org', '@graph' => $nodes ), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP ) . "</script>\n"; // phpcs:ignore WordPress.Security.EscapeOutput
 	}
 
 	/** Problems with the business details, for the settings page and `status`: [ [ severity, text ] ]. */

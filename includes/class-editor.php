@@ -74,15 +74,15 @@ class Editor {
 	}
 
 	public static function save( $post_id, $post ) {
-		if ( ! isset( $_POST[ self::NONCE ] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST[ self::NONCE ] ) ), self::NONCE ) || ! current_user_can( 'edit_post', $post_id ) || wp_is_post_revision( $post_id ) ) {
+		if ( ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) || ! isset( $_POST[ self::NONCE ] ) || ! wp_verify_nonce( sanitize_key( wp_unslash( $_POST[ self::NONCE ] ) ), self::NONCE ) || ! current_user_can( 'edit_post', $post_id ) || wp_is_post_revision( $post_id ) || ! in_array( $post->post_type, Checks::post_types(), true ) ) {
 			return;
 		}
 		$in = isset( $_POST['greenlight_seo_service'] ) && is_array( $_POST['greenlight_seo_service'] ) ? wp_unslash( $_POST['greenlight_seo_service'] ) : array(); // phpcs:ignore WordPress.Security.ValidatedSanitizedInput
 		$m  = array(
 			'on'          => empty( $in['on'] ) ? 0 : 1,
-			'name'        => sanitize_text_field( $in['name'] ?? '' ),
-			'description' => sanitize_textarea_field( $in['description'] ?? '' ),
-			'area'        => sanitize_textarea_field( $in['area'] ?? '' ),
+			'name'        => mb_substr( sanitize_text_field( $in['name'] ?? '' ), 0, 200 ),
+			'description' => mb_substr( sanitize_textarea_field( $in['description'] ?? '' ), 0, 1000 ),
+			'area'        => mb_substr( sanitize_textarea_field( $in['area'] ?? '' ), 0, 2000 ),
 		);
 		if ( $m['on'] || '' !== $m['name'] || '' !== $m['description'] || '' !== $m['area'] ) {
 			update_post_meta( $post_id, Schema::SERVICE_META, $m );

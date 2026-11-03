@@ -40,6 +40,7 @@ class Llms {
 		status_header( 200 );
 		header( 'Content-Type: text/plain; charset=utf-8' );
 		header( 'X-Robots-Tag: noindex' );
+		header( 'X-Content-Type-Options: nosniff' ); // Plain text, never rendered as HTML.
 		echo $text; // phpcs:ignore WordPress.Security.EscapeOutput -- plain text.
 		exit;
 	}

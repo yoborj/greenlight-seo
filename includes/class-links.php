@@ -330,6 +330,7 @@ class Links {
 				$inbound = get_option( self::INBOUND, array() );
 				$from    = array_map( function ( $s ) { return array( 'id' => $s, 'title' => get_the_title( $s ), 'url' => get_permalink( $s ) ); }, array_slice( $inbound[ $id ] ?? array(), 0, 20 ) );
 				$content = $req->get_param( 'content' );
+				$content = is_string( $content ) ? substr( $content, 0, 500000 ) : null; // Unsaved editor content, capped.
 				return rest_ensure_response( array(
 					'inbound'     => count( $inbound[ $id ] ?? array() ),
 					'from'        => $from,

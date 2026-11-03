@@ -2,7 +2,7 @@
 /**
  * Plugin Name:       Greenlight SEO
  * Description:       The local-business SEO that Yoast and Rank Math leave to Premium or don't do: LocalBusiness and Service schema added to their graph, indexing and on-page checks on save (noindex pages in the sitemap, conflicting canonicals, missing or duplicate titles, H1s), internal link suggestions and orphan pages, one place for NAP, and an optional llms.txt. Companion to Greenlight (speed and security).
- * Version:           0.1.0
+ * Version:           0.1.1
  * Requires at least: 6.3
  * Requires PHP:      7.4
  * License:           GPL-2.0-or-later
@@ -11,7 +11,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'GREENLIGHT_SEO_VERSION', '0.1.0' );
+define( 'GREENLIGHT_SEO_VERSION', '0.1.1' );
 define( 'GREENLIGHT_SEO_FILE', __FILE__ );
 define( 'GREENLIGHT_SEO_DIR', plugin_dir_path( __FILE__ ) );
 define( 'GREENLIGHT_SEO_URL', plugin_dir_url( __FILE__ ) );

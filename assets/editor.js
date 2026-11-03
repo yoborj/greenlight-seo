@@ -73,7 +73,7 @@
 			r.suggestions.forEach( function ( s ) {
 				var li = h( 'li' );
 				var a = h( 'a', '', s.title );
-				a.href = s.url;
+				a.href = /^https?:\/\//.test( s.url ) ? s.url : '#';
 				a.target = '_blank';
 				var btn = h( 'button', 'button button-small', 'Copy link' );
 				btn.type = 'button';

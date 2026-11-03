@@ -116,13 +116,15 @@ class Settings {
 		update_option( self::OPTION, self::sanitize( array_merge( self::all(), $changes ) ) );
 	}
 
+	const MAX_LOCATIONS = 25;
+
 	/** One place (the main business or a location). */
 	private static function place( array $in ) {
 		$out = array();
 		foreach ( self::PLACE as $k ) {
 			$v = $in[ $k ] ?? '';
 			if ( 'hours' === $k ) {
-				$out[ $k ] = sanitize_textarea_field( wp_unslash( $v ) );
+				$out[ $k ] = mb_substr( sanitize_textarea_field( wp_unslash( $v ) ), 0, 1000 );
 			} elseif ( 'email' === $k ) {
 				$out[ $k ] = sanitize_email( wp_unslash( $v ) );
 			} elseif ( in_array( $k, array( 'lat', 'lng' ), true ) ) {
@@ -131,7 +133,7 @@ class Settings {
 			} elseif ( 'country' === $k ) {
 				$out[ $k ] = strtoupper( substr( preg_replace( '/[^A-Za-z]/', '', (string) $v ), 0, 2 ) );
 			} else {
-				$out[ $k ] = sanitize_text_field( wp_unslash( $v ) );
+				$out[ $k ] = mb_substr( sanitize_text_field( wp_unslash( $v ) ), 0, 200 );
 			}
 		}
 		return $out;
@@ -151,24 +153,24 @@ class Settings {
 				$out[ $key ] = absint( $input[ $key ] ?? 0 );
 			} elseif ( 'locations' === $key ) {
 				$out[ $key ] = array();
-				foreach ( (array) ( $input[ $key ] ?? array() ) as $loc ) {
+				foreach ( array_slice( (array) ( $input[ $key ] ?? array() ), 0, self::MAX_LOCATIONS + 5 ) as $loc ) {
 					if ( ! is_array( $loc ) || ! empty( $loc['_remove'] ) ) {
 						continue;
 					}
 					$place = self::place( $loc ) + array( 'page_id' => absint( $loc['page_id'] ?? 0 ) );
-					if ( '' !== $place['name'] || '' !== $place['street'] || $place['page_id'] ) {
+					if ( ( '' !== $place['name'] || '' !== $place['street'] || $place['page_id'] ) && count( $out[ $key ] ) < self::MAX_LOCATIONS ) {
 						$out[ $key ][] = $place;
 					}
 				}
 			} elseif ( in_array( $key, array( 'hours', 'area_served', 'description', 'llms_intro' ), true ) ) {
-				$out[ $key ] = sanitize_textarea_field( wp_unslash( $input[ $key ] ?? $default ) );
+				$out[ $key ] = mb_substr( sanitize_textarea_field( wp_unslash( $input[ $key ] ?? $default ) ), 0, 5000 );
 			} elseif ( 'same_as' === $key ) {
-				$urls        = array_filter( array_map( 'esc_url_raw', array_map( 'trim', explode( "\n", (string) wp_unslash( $input[ $key ] ?? '' ) ) ) ) );
+				$urls        = array_slice( array_filter( array_map( function ( $u ) { return esc_url_raw( $u, array( 'http', 'https' ) ); }, array_map( 'trim', explode( "\n", (string) wp_unslash( $input[ $key ] ?? '' ) ) ) ) ), 0, 30 );
 				$out[ $key ] = implode( "\n", $urls );
 			} elseif ( in_array( $key, self::PLACE, true ) ) {
 				$out[ $key ] = self::place( array( $key => $input[ $key ] ?? $default ) )[ $key ];
 			} else {
-				$out[ $key ] = sanitize_text_field( wp_unslash( $input[ $key ] ?? $default ) );
+				$out[ $key ] = mb_substr( sanitize_text_field( wp_unslash( $input[ $key ] ?? $default ) ), 0, 200 );
 			}
 		}
 		if ( '' === $out['country'] ) {

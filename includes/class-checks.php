@@ -71,6 +71,13 @@ class Checks {
 			'callback'            => function ( $req ) {
 				$id = (int) $req['id'];
 				if ( 'POST' === $req->get_method() ) {
+					// One check per page every 15 seconds: each one makes several requests to the site itself.
+					$key  = 'greenlight_seo_checking_' . $id;
+					$last = get_transient( $key );
+					if ( $last ) {
+						return rest_ensure_response( self::last( $id ) );
+					}
+					set_transient( $key, 1, 15 );
 					return rest_ensure_response( self::run( $id ) );
 				}
 				return rest_ensure_response( self::last( $id ) );
@@ -177,15 +184,32 @@ class Checks {
 
 	// ---------------------------------------------------------------- Fetching.
 
+	/** Whether a URL is on this site (same host as the home URL, with or without www). */
+	public static function on_site( $url ) {
+		$bare = function ( $u ) { return preg_replace( '/^www\./', '', strtolower( (string) wp_parse_url( $u, PHP_URL_HOST ) ) ); };
+		return '' !== $bare( $url ) && $bare( $url ) === $bare( home_url() ) && in_array( strtolower( (string) wp_parse_url( $url, PHP_URL_SCHEME ) ), array( 'http', 'https' ), true );
+	}
+
+	/**
+	 * Fetches a URL. This site's own pages use WordPress's loopback settings; any other URL (a canonical a page
+	 * points elsewhere, which an editor can set) goes through wp_safe_remote_*, which refuses private and reserved
+	 * addresses, so a check can't be used to reach the server's internal network.
+	 */
 	private static function fetch( $url, $method = 'GET' ) {
+		$own  = self::on_site( $url );
 		$args = array(
 			'timeout'     => 15,
 			'redirection' => 0,
-			'sslverify'   => apply_filters( 'https_local_ssl_verify', false ), // Same as WordPress's own loopback requests.
+			'sslverify'   => $own ? apply_filters( 'https_local_ssl_verify', false ) : true, // Loopback: as WordPress's own loopback requests do.
 			'headers'     => array( 'Cache-Control' => 'no-cache' ),
 			'user-agent'  => 'Mozilla/5.0 (compatible; GreenlightSEO/' . GREENLIGHT_SEO_VERSION . '; +' . home_url( '/' ) . ')',
 		);
-		$r    = 'HEAD' === $method ? wp_remote_head( $url, $args ) : wp_remote_get( $url, $args );
+		if ( $own ) {
+			$r = 'HEAD' === $method ? wp_remote_head( $url, $args ) : wp_remote_get( $url, $args );
+		} else {
+			$args['limit_response_size'] = 1048576;
+			$r = 'HEAD' === $method ? wp_safe_remote_head( $url, $args ) : wp_safe_remote_get( $url, $args );
+		}
 		if ( is_wp_error( $r ) ) {
 			return array( 'code' => 0, 'error' => $r->get_error_message(), 'body' => '', 'headers' => array() );
 		}
@@ -228,7 +252,8 @@ class Checks {
 		foreach ( $candidates as $path ) {
 			$locs = self::sitemap( home_url( $path ) );
 			if ( null !== $locs && $locs ) {
-				$children = array_values( array_filter( $locs, function ( $u ) { return (bool) preg_match( '/\.xml(\?|$)/i', $u ); } ) );
+				// Child sitemaps on this site only: a sitemap can't send the check to another host.
+				$children = array_values( array_filter( $locs, function ( $u ) { return (bool) preg_match( '/\.xml(\?|$)/i', $u ) && self::on_site( $u ); } ) );
 				return array( 'url' => home_url( $path ), 'children' => $children ?: array( home_url( $path ) ), 'flat' => ! $children );
 			}
 		}
@@ -385,7 +410,9 @@ class Checks {
 			if ( ! self::same_url( $canon, $url ) ) {
 				$add( 'canonical_elsewhere', $in_sitemap ? 'medium' : 'low', 'The canonical points to another URL (' . $canon . ')' . ( $in_sitemap ? ' while the sitemap lists this one: list the canonical URL, or point the canonical here.' : '.' ) );
 				$target = self::fetch( $canon, 'HEAD' );
-				if ( 200 !== $target['code'] ) {
+				if ( ! $target['code'] && ! self::on_site( $canon ) ) {
+					$add( 'canonical_target', 'high', 'The canonical URL couldn\'t be checked (' . $target['error'] . '). A canonical to a private or internal address is never fetched.' );
+				} elseif ( 200 !== $target['code'] ) {
 					$add( 'canonical_target', 'high', 'The canonical URL answers ' . ( $target['code'] ?: $target['error'] ) . ', not 200.' );
 				}
 			}

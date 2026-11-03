@@ -9,8 +9,8 @@ canonicals, XML sitemaps, breadcrumbs, the main schema graph, FAQ and How-to blo
 stay with Yoast SEO or Rank Math. Greenlight SEO adds what they charge for or don't have, and steps aside
 when the site already has it.
 
-Requires WordPress 6.3+ and PHP 7.4+. Current version: **0.1.0**
-([download](https://github.com/yoborj/greenlight-seo/releases/tag/v0.1.0), [changelog](CHANGELOG.md)).
+Requires WordPress 6.3+ and PHP 7.4+. Current version: **0.1.1**
+([download](https://github.com/yoborj/greenlight-seo/releases/tag/v0.1.1), [changelog](CHANGELOG.md)).
 
 ![Overview: what's running and what steps aside for Yoast SEO, site health counts, and business details to fix](docs/greenlight-seo-overview.png)
 
@@ -164,6 +164,20 @@ The checks and schema rules follow the SEO skills in
 The rest of those skills (content writing, briefs, topic clusters, competitor and backlink analysis,
 keyword research, Google Business Profile and map rankings) need outside data or judgment, so they stay
 Claude workflows rather than plugin features.
+
+## Security
+
+- **Who can do what.** Settings, "Check all pages now" and the link index rebuild need `manage_options` and a nonce.
+  The editor box and its REST endpoints (`greenlight-seo/v1/check/<id>`, `…/links/<id>`) need `edit_post` on that page
+  and the REST nonce. Data is stored in underscore-prefixed (protected) post meta and the plugin's own options.
+- **Requests the plugin makes.** Checks fetch this site's own pages and sitemaps (as WordPress's loopback requests do).
+  The only other URL it ever fetches is a canonical a page points elsewhere, through `wp_safe_remote_head()`, which
+  refuses private and reserved addresses. Redirects are never followed.
+- **Limits.** One check per page every 15 seconds; at most 500 KB of unsaved content for link suggestions; 25
+  locations; length limits on every setting.
+- **Output.** Admin and editor output is escaped; the editor box builds its HTML with `textContent`; the JSON-LD
+  it prints itself escapes `<`, `>` and `&`; llms.txt is plain text with `nosniff`.
+- Not here: logins, firewall rules, security headers and alerts are Greenlight's job.
 
 ## Install
 
