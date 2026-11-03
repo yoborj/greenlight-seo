@@ -1,0 +1,22 @@
+/* Greenlight SEO edit-screen box. */
+.glseo-box { font-size: 13px; }
+.glseo-sec { padding: 4px 0 12px; border-bottom: 1px solid #eef0f2; }
+.glseo-sec:last-child { border-bottom: 0; }
+.glseo-sec h4 { display: flex; align-items: center; gap: 8px; margin: 10px 0 8px; font-size: 13px; }
+.glseo-note { margin: 4px 0; color: #50575e; }
+.glseo-sub { margin: 10px 0 4px; font-weight: 600; }
+.glseo-check { display: block; margin: 6px 0; }
+.glseo-service { display: grid; gap: 8px; margin: 8px 0 0 24px; max-width: 640px; }
+.glseo-service label { display: grid; gap: 3px; font-weight: 600; }
+.glseo-service small { font-weight: 400; color: #646970; }
+.glseo-service input, .glseo-service textarea { width: 100%; }
+.glseo-issues, .glseo-sugg { margin: 0; padding: 0; list-style: none; }
+.glseo-issues li, .glseo-sugg li { margin: 0 0 6px; line-height: 1.5; }
+.glseo-badge { display: inline-block; min-width: 54px; padding: 0 6px; border-radius: 10px; font-size: 11px; font-weight: 600; text-align: center; background: #f0f0f1; color: #50575e; }
+.glseo-sev-high .glseo-badge { background: #fcf0f1; color: #b32d2e; }
+.glseo-sev-medium .glseo-badge { background: #fcf9e8; color: #8a6116; }
+.glseo-sev-low .glseo-badge { background: #f0f6fc; color: #2271b1; }
+.glseo-ok { color: #00733b; }
+.glseo-facts { margin: 8px 0 0; color: #646970; font-size: 12px; word-break: break-word; }
+.glseo-sugg a { font-weight: 600; }
+.glseo-why { color: #50575e; }
