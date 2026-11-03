@@ -140,7 +140,6 @@ class Admin {
 		$labels = array(
 			'local_schema'     => 'LocalBusiness schema',
 			'service_schema'   => 'Service schema',
-			'faq_block'        => 'FAQ block',
 			'checks_on_save'   => 'Checks on save',
 			'link_suggestions' => 'Link suggestions',
 			'llms_txt'         => 'llms.txt',
@@ -274,9 +273,8 @@ class Admin {
 						<?php
 						self::switch_row( 'local_schema', 'LocalBusiness schema', 'The business type, address, phone, opening hours, coordinates, areas served and profiles, on the main page (with Yoast: on every page, inside its Organization) and each location\'s page.', $features, $s );
 						self::switch_row( 'service_schema', 'Service schema', 'On pages marked as service pages (tick “This is a service page” in the Greenlight SEO box when editing the page): the service, its description and areas, provided by the business.', $features, $s );
-						self::switch_row( 'faq_block', 'FAQ block', 'An “FAQ (Greenlight SEO)” block with FAQPage schema, for sites without Yoast SEO or Rank Math (both have their own FAQ block). Google shows FAQ rich results only for government and health sites, but the markup still tells search engines and AI answers what the questions are. Use real questions answered from the business\'s own copy.', $features, $s );
 						?>
-						<p class="gls-muted">HowTo schema isn't included: Google stopped showing HowTo rich results in 2023.</p>
+						<p class="gls-muted">No FAQ or HowTo schema: for FAQs, use <?php echo esc_html( Detect::yoast() ? 'Yoast SEO\'s' : ( Detect::rank_math() ? 'Rank Math\'s' : 'the SEO plugin\'s' ) ); ?> FAQ block; Google stopped showing HowTo rich results in 2023.</p>
 					</div>
 					<?php submit_button(); ?>
 				</section>

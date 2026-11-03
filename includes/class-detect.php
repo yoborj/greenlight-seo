@@ -6,7 +6,7 @@ defined( 'ABSPATH' ) || exit;
 /**
  * Which SEO plugins are active, and which Greenlight SEO features step aside for them.
  * Rule: never do what the site's SEO plugin already does (titles, meta, sitemaps, its own schema, its
- * FAQ/How-to blocks, its llms.txt); fill in what it leaves to a paid add-on, and step aside when that add-on is there.
+ * FAQ and How-to blocks, its llms.txt); fill in what it leaves to a paid add-on, and step aside when that add-on is there.
  */
 class Detect {
 
@@ -72,14 +72,6 @@ class Detect {
 		$out['local_schema'] = self::feature( $s['local_schema'], $local );
 
 		$out['service_schema'] = self::feature( $s['service_schema'], null );
-
-		$faq = null;
-		if ( self::yoast() ) {
-			$faq = 'Yoast SEO has its own FAQ block: use that one';
-		} elseif ( self::rank_math() ) {
-			$faq = 'Rank Math has its own FAQ block: use that one';
-		}
-		$out['faq_block'] = self::feature( $s['faq_block'], $faq );
 
 		$out['checks_on_save'] = self::feature( $s['checks_on_save'], null );
 

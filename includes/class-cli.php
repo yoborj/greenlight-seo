@@ -127,7 +127,7 @@ class CLI {
 	 * Change one setting.
 	 *
 	 * <key>
-	 * : Setting name: local_schema, service_schema, faq_block, checks_on_save, check_title_suffix,
+	 * : Setting name: local_schema, service_schema, checks_on_save, check_title_suffix,
 	 * link_suggestions, llms_txt (1/0), or a business field (name, type, phone, street, city, region, postal, …).
 	 *
 	 * <value>

@@ -32,18 +32,17 @@ Screenshots use a made-up demo site.
 | **On-page checks, on save** | Missing, multiple or duplicate titles; not exactly one H1; the H1 being the SEO title word for word; content images without alt text; optionally, titles not ending with "\| Site name". | Yoast's analysis covers the focus keyphrase; Greenlight SEO checks the rendered page and the whole site. |
 | **Internal links** | Orphan pages, dead ends, links to missing or redirected pages, the most-linked pages, and link suggestions while editing (service and location pages first). | Yoast: **Premium** (suggestions, orphaned content). Rank Math: suggestions in the free plugin. Suggestions step aside for both. |
 | **NAP in one place** | `[greenlight_nap]` prints the name, address, phone, hours or email of the business or any location, from the same settings as the schema. | Yoast: Local SEO add-on. |
-| **FAQ block** | Questions and answers with FAQPage schema. | Both have their own FAQ block: Greenlight SEO's is only offered when neither is active. |
 | **llms.txt** | Optional `/llms.txt`: the business, services, locations, pages and recent posts, as Markdown links for AI assistants. | Yoast has one (free since 25.3), Rank Math has a module. Greenlight SEO's can't be switched on while theirs is on. |
 
-Not included, on purpose: **HowTo schema** (Google stopped showing HowTo rich results in 2023), a
+Not included, on purpose: an **FAQ block** (Yoast SEO and Rank Math have one), **HowTo schema** (Google stopped showing HowTo rich results in 2023), a
 **redirect manager** (use the Redirection plugin, which the QA app manages), and anything the SEO plugin
 already does.
 
 ## How it works with the SEO plugin
 
 Greenlight SEO checks what's active on every request and shows it on the Overview: each feature is **on**,
-**off** (switched off), or **stepping aside**, with the reason, e.g. "Yoast SEO has its own FAQ block: use
-that one". The Overview also warns about overlapping plugins (All in One SEO, SEOPress, Schema Pro, Link
+**off** (switched off), or **stepping aside**, with the reason, e.g. "Yoast SEO Premium suggests internal links
+while you write". The Overview also warns about overlapping plugins (All in One SEO, SEOPress, Schema Pro, Link
 Whisper, or Yoast and Rank Math active together).
 
 **Schema goes into the SEO plugin's own graph,** so each page still has one JSON-LD graph:
@@ -128,7 +127,7 @@ wp greenlight-seo set <key> <value>
 
   ```json
   {"greenlight_seo_version":"0.1.0","schema":1,"seo_plugin":"Yoast SEO",
-   "features":{"local_schema":{"on":true,"why":null},"faq_block":{"on":false,"why":"Yoast SEO has its own FAQ block: use that one"},…},
+   "features":{"local_schema":{"on":true,"why":null},"link_suggestions":{"on":false,"why":"Yoast SEO Premium suggests internal links while you write"},…},
    "business":{"name":"…","type":"Plumber","has_address":true,"locations":1},
    "problems":[{"severity":"high","message":"…"}],
    "checks":{"flagged_pages":5,"queued":0,"pages":[{"id":8,"url":"…","title":"…","issues":[{"id":"canonical_multiple","severity":"high","text":"…"}]}]},
@@ -141,7 +140,7 @@ wp greenlight-seo set <key> <value>
   with an ID, the link suggestions for that page.
 - `scan`: queues every page for checks and the link index in the background (WP-Cron, a few at a time).
 - `llms`: prints the llms.txt Greenlight SEO would serve.
-- `set`: one setting. Switches (1/0): `local_schema`, `service_schema`, `faq_block`, `checks_on_save`,
+- `set`: one setting. Switches (1/0): `local_schema`, `service_schema`, `checks_on_save`,
   `check_title_suffix`, `link_suggestions`, `llms_txt`. Business fields: `name`, `type`, `phone`, `email`,
   `street`, `city`, `region`, `postal`, `country`, `lat`, `lng`, `hours`, `price_range`, `area_served`,
   `same_as`, `description`.
@@ -156,7 +155,7 @@ The checks and schema rules follow the SEO skills in
   linked to the main business, Service on service pages, deprecated types (Attorney → LegalService) and
   rich results Google retired (HowTo).
 - `onpage-seo`: one H1 that isn't the raw SEO title, the "\| Site name" title suffix, NAP from one central
-  setting, FAQs only from the business's real copy.
+  setting.
 - `seo-interlink` and `seo-links`: orphans, dead ends, links to redirected or missing pages, service and
   location ("money") pages first.
 - `seo-sitemap`: noindex pages in the sitemap.

@@ -22,7 +22,6 @@ neither, and steps aside wherever the site's SEO plugin already does the job.
   the editor (service and location pages first). Suggestions step aside for Yoast SEO Premium and Rank Math.
 - **`[greenlight_nap]` shortcode**: name, address, phone, hours or email of the business or any location,
   from the same settings as the schema.
-- **FAQ block** with FAQPage schema, offered only when neither Yoast SEO nor Rank Math is active.
 - **Optional llms.txt**, off by default; can't be switched on while Yoast's or Rank Math's llms.txt is on or
   an llms.txt file is on the server.
 - **Business checks**: missing address or phone, placeholder values, coordinates under 5 decimals,
@@ -32,5 +31,6 @@ neither, and steps aside wherever the site's SEO plugin already does the job.
   a contract (`schema: 1`).
 
 ### Not included
+- An FAQ block: Yoast SEO and Rank Math have one.
 - HowTo schema (Google stopped showing HowTo rich results in 2023).
 - A redirect manager (the Redirection plugin, managed by the QA app, does that).

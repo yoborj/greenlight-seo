@@ -20,7 +20,6 @@ require_once GREENLIGHT_SEO_DIR . 'includes/class-settings.php';
 require_once GREENLIGHT_SEO_DIR . 'includes/class-detect.php';
 require_once GREENLIGHT_SEO_DIR . 'includes/class-business.php';
 require_once GREENLIGHT_SEO_DIR . 'includes/class-schema.php';
-require_once GREENLIGHT_SEO_DIR . 'includes/class-faq.php';
 require_once GREENLIGHT_SEO_DIR . 'includes/class-checks.php';
 require_once GREENLIGHT_SEO_DIR . 'includes/class-links.php';
 require_once GREENLIGHT_SEO_DIR . 'includes/class-llms.php';
@@ -30,7 +29,6 @@ require_once GREENLIGHT_SEO_DIR . 'includes/class-admin.php';
 
 Greenlight_SEO\Business::init();
 Greenlight_SEO\Schema::init();
-Greenlight_SEO\Faq::init();
 Greenlight_SEO\Checks::init();
 Greenlight_SEO\Links::init();
 Greenlight_SEO\Llms::init();

@@ -12,7 +12,7 @@ class Settings {
 	const OPTION = 'greenlight_seo_settings';
 
 	/** Switches (1/0). */
-	const SWITCHES = array( 'local_schema', 'service_schema', 'faq_block', 'checks_on_save', 'check_title_suffix', 'link_suggestions', 'llms_txt' );
+	const SWITCHES = array( 'local_schema', 'service_schema', 'checks_on_save', 'check_title_suffix', 'link_suggestions', 'llms_txt' );
 
 	/**
 	 * schema.org LocalBusiness types a local-business site picks from. Attorney is deprecated by schema.org
@@ -83,7 +83,6 @@ class Settings {
 			// Schema.
 			'local_schema'       => 1,
 			'service_schema'     => 1,
-			'faq_block'          => 1, // Only registered when neither Yoast SEO nor Rank Math is active.
 
 			// Checks.
 			'checks_on_save'     => 1,
